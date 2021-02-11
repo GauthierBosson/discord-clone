@@ -1,6 +1,6 @@
 import React from 'react'
-
 import { Grid } from '@chakra-ui/react'
+
 import Topbar from './topbar/Topbar'
 import Chat from './chat/Chat'
 
