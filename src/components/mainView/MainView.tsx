@@ -6,7 +6,7 @@ import Chat from './chat/Chat'
 
 const MainView = () => {
   return (
-    <Grid h="100vh" templateRows="50px 1fr" bgColor="blackAlpha.600">
+    <Grid h="100vh" templateRows="50px 1fr" bgColor="discordGrey.100">
       <Topbar />
       <Chat />
     </Grid>

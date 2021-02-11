@@ -3,7 +3,7 @@ import { Flex, Input } from "@chakra-ui/react";
 
 const ChatSearch = () => {
   return (
-    <Flex align="center">
+    <Flex align="center" px={3}>
       <Input
         size="xs"
         rounded="sm"

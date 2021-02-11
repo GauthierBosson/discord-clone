@@ -17,7 +17,7 @@ import ProfileBar from './ProfileBar'
 
 const UsersList = () => {
   return (
-    <Grid templateRows="50px 1fr 50px" bgColor="blackAlpha.700" px={3}>
+    <Grid templateRows="50px 1fr 50px" bgColor="discordGrey.200">
       <ChatSearch />
       <Users />
       <ProfileBar />

@@ -3,7 +3,7 @@ import { Flex, Avatar, AvatarBadge, HStack } from '@chakra-ui/react'
 
 const ProfileBar = () => {
   return (
-    <Flex justify="space-between" align="center">
+    <Flex justify="space-between" align="center" bgColor="discordGrey.300" px={3}>
       <Avatar size="sm">
         <AvatarBadge boxSize="1em" bg="green.500" />
       </Avatar>

@@ -6,7 +6,7 @@ import UsersList from './usersList/UsersList'
 
 const Sidebar = () => {
   return (
-    <Grid h="100vh" templateColumns="100px 1fr">
+    <Grid h="100vh" templateColumns="70px 1fr">
       <ServersList />
       <UsersList />
     </Grid>

@@ -11,7 +11,7 @@ import {
 
 const Users = () => {
   return (
-    <VStack>
+    <VStack px={3}>
       <Button
         w="100%"
         leftIcon={<span>ic</span>}
