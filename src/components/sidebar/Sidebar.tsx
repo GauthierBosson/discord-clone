@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid } from '@chakra-ui/react'
 
 import ServersList from './ServersList'
-import UsersList from './UsersList'
+import UsersList from './usersList/UsersList'
 
 const Sidebar = () => {
   return (
