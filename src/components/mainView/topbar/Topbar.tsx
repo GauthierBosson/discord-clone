@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Flex, Box, Button, HStack } from '@chakra-ui/react'
 
-const Topbar = () => {
+const Topbar = (): JSX.Element => {
   return (
     <Flex align="center" justify="space-between">
       <Box>

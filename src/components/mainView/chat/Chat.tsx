@@ -4,7 +4,7 @@ import { Grid } from '@chakra-ui/react'
 import MessagesView from './messagesView/MessagesView'
 import InputMessage from "./InputMessage";
 
-const Chat = () => {
+const Chat = (): JSX.Element => {
   return (
     <Grid templateRows="1fr 60px">
       <MessagesView />

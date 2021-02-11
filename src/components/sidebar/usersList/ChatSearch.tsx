@@ -1,7 +1,7 @@
 import React from 'react'
 import { Flex, Input } from "@chakra-ui/react";
 
-const ChatSearch = () => {
+const ChatSearch = (): JSX.Element => {
   return (
     <Flex align="center" px={3}>
       <Input

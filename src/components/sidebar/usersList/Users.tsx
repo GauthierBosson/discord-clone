@@ -9,7 +9,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 
-const Users = () => {
+const Users = (): JSX.Element => {
   return (
     <VStack px={3}>
       <Button

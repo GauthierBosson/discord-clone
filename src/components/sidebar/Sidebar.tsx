@@ -4,7 +4,7 @@ import { Grid } from '@chakra-ui/react'
 import ServersList from './ServersList'
 import UsersList from './usersList/UsersList'
 
-const Sidebar = () => {
+const Sidebar = (): JSX.Element => {
   return (
     <Grid h="100vh" templateColumns="70px 1fr">
       <ServersList />

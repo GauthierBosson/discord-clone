@@ -1,7 +1,7 @@
 import React from 'react'
-import { Flex, Avatar, VStack } from '@chakra-ui/react'
+import { Avatar, VStack } from '@chakra-ui/react'
 
-const ServersList = () => {
+const ServersList = (): JSX.Element => {
   return (
     <VStack overflowY="scroll" py={4} bgColor="discordGrey.400">
       <Avatar name="John Doe" src="broken"></Avatar>

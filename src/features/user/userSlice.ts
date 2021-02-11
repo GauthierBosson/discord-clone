@@ -1,25 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootStateOrAny } from 'react-redux'
 
-interface UserInfosProps {
-  pseudo: string | null
+interface UserProps {
+  userInfos: {
+    pseudo: string
+  } | null
 }
 
-const initialState: UserInfosProps = { pseudo: null }
+const initialState: UserProps = { userInfos: null }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     login(state, action) {
-      state.pseudo = action.payload.pseudo
+      state.userInfos = action.payload
     },
-    logout(state, action) {
-      state.pseudo = null
+    logout(state) {
+      state.userInfos = null
     },
   },
 })
 
 export const { login, logout } = userSlice.actions
-export const selectUser = (state: RootStateOrAny) => state.user.userInfos;
+export const selectUser = (state: RootStateOrAny): UserProps => state.user;
 export default userSlice.reducer

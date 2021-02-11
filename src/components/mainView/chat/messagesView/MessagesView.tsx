@@ -3,7 +3,7 @@ import { VStack, Box } from "@chakra-ui/react";
 
 import Message from './Message'
 
-const MessagesView = () => {
+const MessagesView = (): JSX.Element => {
   return (
     <Box h="100%" pos="relative">
       <VStack spacing={0} pos="absolute" top="0" right="0" left="0" bottom="0" overflowY="scroll">

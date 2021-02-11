@@ -9,7 +9,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 
-const InputMessage = () => {
+const InputMessage = (): JSX.Element => {
   return (
     <Box>
       <Box px={4}>

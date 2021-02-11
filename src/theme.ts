@@ -8,6 +8,9 @@ const theme = extendTheme({
       300: '#282b30',
       400: '#1e2124',
     },
+    discordPurple: {
+      100: '#7289da',
+    },
   },
 })
 

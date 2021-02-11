@@ -1,7 +1,7 @@
 import React from 'react'
 import { Flex, Avatar, AvatarBadge, HStack } from '@chakra-ui/react'
 
-const ProfileBar = () => {
+const ProfileBar = (): JSX.Element => {
   return (
     <Flex justify="space-between" align="center" bgColor="discordGrey.300" px={3}>
       <HStack>
