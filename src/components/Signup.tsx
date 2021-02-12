@@ -1,8 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Formik, Form, Field } from 'formik'
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { auth } from '../firebase'
 import { login } from '../features/user/userSlice'
 import {
   SimpleGrid,
@@ -12,7 +11,7 @@ import {
   Button,
   FormControl,
   FormLabel,
-  FormErrorMessage
+  FormErrorMessage,
 } from '@chakra-ui/react'
 
 const Signup = (): JSX.Element => {
@@ -28,21 +27,22 @@ const Signup = (): JSX.Element => {
         }}
         onSubmit={async (values, actions) => {
           try {
-            await firebase
-              .auth()
+            await auth
               .createUserWithEmailAndPassword(values.email, values.password)
-            const user = firebase.auth().currentUser
-            if (user) {
-              await user.updateProfile({
-                displayName: values.username,
-              })
+              .then(async () => {
+                const user = auth.currentUser
+                if (user) {
+                  await user.updateProfile({
+                    displayName: values.username,
+                  })
 
-              dispatch(login({ pseudo: user.displayName }))
-            }
+                  dispatch(login({ pseudo: user.displayName }))
+                }
+              })
           } catch (error) {
             console.log(error)
+            actions.setSubmitting(false)
           }
-          actions.setSubmitting(false)
         }}
       >
         {(props) => (
