@@ -36,7 +36,7 @@ const Signup = (): JSX.Element => {
                     displayName: values.username,
                   })
 
-                  dispatch(login({ pseudo: user.displayName }))
+                  dispatch(login({ username: user.displayName }))
                 }
               })
           } catch (error) {
