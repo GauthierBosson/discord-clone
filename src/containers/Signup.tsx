@@ -18,7 +18,6 @@ const Signup = (): JSX.Element => {
   const history = useHistory()
   const auth = useAuth()
 
-  console.log(auth.user)
   return (
     <SimpleGrid h="100vh" w="100%" placeItems="center" bgColor="discordGrey.400">
       <Formik

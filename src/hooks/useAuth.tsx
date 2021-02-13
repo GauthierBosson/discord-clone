@@ -2,12 +2,16 @@ import React, { useState, useEffect, useContext, createContext } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase'
 
-import { auth } from '../firebase'
+import { auth, firestore } from '../firebase'
 
 interface AuthProvider {
   user: firebase.User | null
   signin: (email: string, password: string) => Promise<firebase.User | null>
-  signup: (email: string, password: string, username: string) => Promise<firebase.User | null>
+  signup: (
+    email: string,
+    password: string,
+    username: string
+  ) => Promise<firebase.User | null>
   signout: () => Promise<void>
 }
 
@@ -40,13 +44,19 @@ export const PrivateRoute = ({
   )
 }
 
-export function ProvideAuth({ children }: { children: JSX.Element }): JSX.Element | null {
+export function ProvideAuth({
+  children,
+}: {
+  children: JSX.Element
+}): JSX.Element | null {
   const [loading, setLoading] = useState(true)
   const authProvider = useProvideAuth(setLoading)
   if (loading) {
     return null
   } else {
-    return <authContext.Provider value={authProvider}>{children}</authContext.Provider>
+    return (
+      <authContext.Provider value={authProvider}>{children}</authContext.Provider>
+    )
   }
 }
 
@@ -65,8 +75,12 @@ function useProvideAuth(setLoading: React.Dispatch<React.SetStateAction<boolean>
 
   const signup = async (email: string, password: string, username: string) => {
     const res = await auth.createUserWithEmailAndPassword(email, password)
+    firestore.collection('users').doc(res.user?.uid).set({
+      friends: [],
+      servers: []
+    })
     await res.user?.updateProfile({
-      displayName: username
+      displayName: username,
     })
     setUser(res.user)
     return res.user
