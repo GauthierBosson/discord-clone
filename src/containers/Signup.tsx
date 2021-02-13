@@ -1,8 +1,6 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { Formik, Form, Field } from 'formik'
-import { auth } from '../firebase'
-import { login } from '../features/user/userSlice'
+import { useHistory } from "react-router-dom";
 import {
   SimpleGrid,
   Text,
@@ -14,8 +12,13 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react'
 
+import { useAuth } from "../hooks/useAuth";
+
 const Signup = (): JSX.Element => {
-  const dispatch = useDispatch()
+  const history = useHistory()
+  const auth = useAuth()
+
+  console.log(auth.user)
   return (
     <SimpleGrid h="100vh" w="100%" placeItems="center" bgColor="discordGrey.400">
       <Formik
@@ -26,22 +29,13 @@ const Signup = (): JSX.Element => {
           confirmPassword: '',
         }}
         onSubmit={async (values, actions) => {
+          const { email, password, username } = values
           try {
-            await auth
-              .createUserWithEmailAndPassword(values.email, values.password)
-              .then(async () => {
-                const user = auth.currentUser
-                if (user) {
-                  await user.updateProfile({
-                    displayName: values.username,
-                  })
-
-                  dispatch(login({ username: user.displayName }))
-                }
-              })
+            await auth.signup(email, password, username)
+            history.push('/')
           } catch (error) {
-            console.log(error)
             actions.setSubmitting(false)
+            console.log(error)
           }
         }}
       >
