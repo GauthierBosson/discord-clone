@@ -75,7 +75,7 @@ function useProvideAuth(setLoading: React.Dispatch<React.SetStateAction<boolean>
 
   const signup = async (email: string, password: string, username: string) => {
     const res = await auth.createUserWithEmailAndPassword(email, password)
-    firestore.collection('users').doc(res.user?.uid).set({
+    await firestore.collection('users').doc(res.user?.uid).set({
       friends: [],
       servers: []
     })
