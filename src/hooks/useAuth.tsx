@@ -21,7 +21,6 @@ export const PrivateRoute = ({
   path: string
 }): JSX.Element => {
   const auth = useAuth()
-  console.log(auth)
   return (
     <Route
       path={path}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Formik, Form, Field } from 'formik'
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import {
   SimpleGrid,
   Text,
@@ -12,7 +12,17 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react'
 
+import { useAuth } from "../hooks/useAuth";
+
+interface LocationState {
+  from: { pathname: string }
+}
+
 const Login = (): JSX.Element => {
+  const auth = useAuth()
+  const history = useHistory()
+  const location = useLocation<LocationState>()
+  const { from } = location.state || { from: { pathname: "/" } };
   return (
     <SimpleGrid h="100vh" w="100%" placeItems="center" bgColor="discordGrey.400">
       <Formik
@@ -21,7 +31,13 @@ const Login = (): JSX.Element => {
           password: '',
         }}
         onSubmit={async (values) => {
-          console.log(values)
+          const { email, password } = values
+          try {
+            await auth.signin(email, password)
+            history.replace(from)
+          } catch (error) {
+            console.log(error)
+          }
         }}
       >
         {(props) => (
