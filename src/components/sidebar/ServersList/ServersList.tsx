@@ -1,11 +1,12 @@
 import React from 'react'
-import { Avatar, VStack, SkeletonCircle } from '@chakra-ui/react'
+import { VStack, SkeletonCircle } from '@chakra-ui/react'
 
-import { useServers } from '../../hooks/react-query/useServers'
+import { useServers, createServer } from '../../../hooks/react-query/useServers'
+import ServerAvatar from './ServerAvatar'
 
 const ServersList = (): JSX.Element => {
   const { data, isLoading, isError } = useServers()
-  console.log(data)
+  const { mutate } = createServer()
   return (
     <VStack overflowY="scroll" py={4} bgColor="discordGrey.400">
       {isLoading ? (
@@ -22,12 +23,20 @@ const ServersList = (): JSX.Element => {
           ) : (
             <>
               {data?.map((d) => (
-                <Avatar key={d.name} name="John Doe" src="broken"></Avatar>
+                <ServerAvatar key={d.id} name={d.name} id={d.id} />
               ))}
             </>
           )}
         </>
       )}
+      <button
+        color="white"
+        onClick={() =>
+          mutate({ name: 'testserver', picture: null, rooms: [], members: [] })
+        }
+      >
+        ADD SERVER
+      </button>
     </VStack>
   )
 }

@@ -1,7 +1,8 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import {
   useQuery,
   useMutation,
+  useQueryClient,
   UseQueryResult,
   UseMutationResult,
 } from 'react-query'
@@ -11,13 +12,11 @@ import { useAuth } from '../useAuth'
 
 interface ChatProps {
   participants: [string, string]
-  messages: [
-    {
-      sender: string
-      content: string
-      dateTime: Date
-    }
-  ]
+  messages: {
+    sender: string
+    content: string
+    dateTime: Date
+  }[]
 }
 
 export const useChats = (): UseQueryResult<
@@ -37,7 +36,6 @@ export const useChats = (): UseQueryResult<
             const chats = chatsId.map((chat) =>
               firestore.collection('chats').doc(chat).get()
             )
-
             return chats
           } else {
             return []
@@ -52,12 +50,18 @@ export const createServer = (): UseMutationResult<
   firebase.firestore.FirestoreError,
   ChatProps
 > => {
+  const queryClient = useQueryClient()
   return useMutation(
     async (newChat) =>
       await firestore
         .collection('chats')
         .add(newChat)
         .then((docRef) => docRef)
-        .catch((err) => err)
+        .catch((err) => err),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('getChats')
+      },
+    }
   )
 }
