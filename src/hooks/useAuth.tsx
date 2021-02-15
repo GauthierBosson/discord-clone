@@ -74,16 +74,23 @@ function useProvideAuth(setLoading: React.Dispatch<React.SetStateAction<boolean>
   }
 
   const signup = async (email: string, password: string, username: string) => {
-    const res = await auth.createUserWithEmailAndPassword(email, password)
-    await firestore.collection('users').doc(res.user?.uid).set({
-      friends: [],
-      servers: []
-    })
-    await res.user?.updateProfile({
-      displayName: username,
-    })
-    setUser(res.user)
-    return res.user
+    try {
+      const res = await auth.createUserWithEmailAndPassword(email, password)
+      await res.user?.updateProfile({
+        displayName: username,
+      })
+      await firestore.collection('users').doc(res.user?.uid).set({
+        displayName: res.user?.displayName,
+        photoURL: res.user?.photoURL,
+        friends: [],
+        servers: [],
+        chats: []
+      })
+      setUser(res.user)
+      return res.user
+    } catch (error) {
+      return error
+    }
   }
 
   const signout = async () => {

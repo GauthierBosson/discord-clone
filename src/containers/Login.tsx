@@ -49,13 +49,13 @@ const Login = (): JSX.Element => {
             p={6}
             bgColor="discordGrey.200"
           >
-            <Text fontSize="3xl" as="h1">
+            <Text fontSize="3xl" as="h1" color="white">
               Créer un compte
             </Text>
             <Field name="email">
               {({ form, field }: { form: any; field: any }) => (
                 <FormControl isInvalid={form.errors.email && form.touched.email}>
-                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <FormLabel color="white" htmlFor="email">Email</FormLabel>
                   <Input {...field} id="email" type="email" placeholder="Email" />
                   <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                 </FormControl>
@@ -67,7 +67,7 @@ const Login = (): JSX.Element => {
                 <FormControl
                   isInvalid={form.errors.password && form.touched.password}
                 >
-                  <FormLabel htmlFor="password">Mot de passe</FormLabel>
+                  <FormLabel color="white" htmlFor="password">Mot de passe</FormLabel>
                   <Input
                     {...field}
                     id="password"
