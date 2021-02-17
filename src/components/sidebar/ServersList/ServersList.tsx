@@ -23,16 +23,26 @@ const ServersList = (): JSX.Element => {
           ) : (
             <>
               {data?.map((d) => (
-                <ServerAvatar key={d.id} name={d.name} id={d.id} />
+                <ServerAvatar
+                  key={d.id}
+                  name={d.name}
+                  id={d.id}
+                  textualRooms={d.textualRooms}
+                />
               ))}
             </>
           )}
         </>
       )}
       <button
-        color="white"
+        style={{ backgroundColor: 'white' }}
         onClick={() =>
-          mutate({ name: 'testserver', picture: null, rooms: [], members: [] })
+          mutate({
+            name: 'testserver',
+            picture: null,
+            textualRooms: [{ name: 'accueil', messages: [] }],
+            members: [],
+          })
         }
       >
         ADD SERVER

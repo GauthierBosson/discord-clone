@@ -1,4 +1,5 @@
 import React from 'react'
+import { useAtom } from "jotai";
 import {
   VStack,
   Button,
@@ -9,7 +10,10 @@ import {
   Box,
 } from '@chakra-ui/react'
 
+import { viewType } from '../../../hooks/useAppState'
+
 const Users = (): JSX.Element => {
+  const [, setType] = useAtom(viewType)
   return (
     <VStack px={3}>
       <Button

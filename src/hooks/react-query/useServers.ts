@@ -10,25 +10,29 @@ import {
 import { firestore } from '../../firebase'
 import { useAuth } from '../useAuth'
 
-// TODO complete schemas for messages in rooms and members
-interface ServerProps {
+// TODO : Messages should be a sub-collection, can't use serverTimestamp atm
+export type MessageProps = {
+  id: string
+  sender: string
+  content: string
+  timestamp: firebase.firestore.Timestamp
+}
+
+export type RoomProps = {
+  name: string
+  messages: MessageProps[]
+}
+export interface ServerProps {
   id?: string
   name: string
   picture: string | null
-  rooms: {
-    name: string
-    type: 'textual' | 'vocal'
-    messages: [
-      {
-        sender: string
-        content: string
-        dateTime: Date
-      }
-    ]
-  }[]
+  textualRooms: RoomProps[]
   members: string[]
 }
 
+/**
+ * Get all servers and return them
+ */
 export const useServers = (): UseQueryResult<
   ServerProps[],
   firebase.firestore.FirestoreError
@@ -59,6 +63,9 @@ export const useServers = (): UseQueryResult<
   })
 }
 
+/**
+ * Create a new server
+ */
 export const createServer = (): UseMutationResult<
   firebase.firestore.DocumentReference,
   firebase.firestore.FirestoreError,
@@ -92,4 +99,27 @@ export const createServer = (): UseMutationResult<
       },
     }
   )
+}
+
+/**
+ * Add a new message in a room on a server
+ */
+export const addMessage = (
+  serverId: string
+): UseMutationResult<void, firebase.firestore.FirestoreError, MessageProps> => {
+  const queryClient = useQueryClient()
+  return useMutation(async (newMsg) => {
+    try {
+      await firestore
+        .collection('servers')
+        .doc(serverId)
+        .update({
+          messages: firebase.firestore.FieldValue.arrayUnion(newMsg),
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }, { onSuccess: () => {
+    queryClient.invalidateQueries('getServers')
+  }})
 }
