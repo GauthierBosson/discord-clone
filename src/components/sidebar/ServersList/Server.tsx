@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
 import { SkeletonCircle } from '@chakra-ui/react'
 
@@ -7,29 +7,32 @@ import { Avatar } from '@chakra-ui/react'
 import { viewType, serverId } from '../../../hooks/useAppState'
 import { useServer } from '../../../hooks/react-query/useServers'
 
-// TODO : Instead of getting all infos in props, get all the infos with getServer query
 const Server: React.FC<{ id: string | undefined }> = ({ id }) => {
   const { data, isLoading, isError } = useServer(id!)
   const [, setType] = useAtom(viewType)
   const [, setServerId] = useAtom(serverId)
+  const notification = new Audio('/sound/notification.mp3')
+  /**
+   * isFirstRender is used to avoid notifications on first render of Server components
+   * by checking it's value on the onSnapshot
+   */
+  const isFirstRender = useRef(true)
   useEffect(() => {
     const unsubscribe = firestore
       .collection('servers')
       .doc(id)
-      .onSnapshot((doc) => {
-        console.log(`update : ${JSON.stringify(doc.data(), null, 2)}`)
-        // const room = doc.data() as RoomProps
-        // room.messages.forEach((msg, i) => {
-        //   if (i === room.messages.length - 1) {
-        //     console.log('i = length')
-        //     setMessages([...messages, msg])
-        //   }
-        // })
+      .onSnapshot(() => {
+        if (isFirstRender.current) {
+          isFirstRender.current = false
+        } else {
+          // notification.play()
+        }
       })
 
     return () => unsubscribe()
   }, [])
 
+  // TODO : make an "invalid avatar" for bad server component load
   if (isError) {
     return null
   }

@@ -10,8 +10,6 @@ import {
 import { firestore } from '../../firebase'
 import { useAuth } from '../useAuth'
 
-// TODO : Messages should be a sub-collection, can't use serverTimestamp atm
-// TODO : Rooms should be a sub-collection
 export type MessageProps = {
   id: string
   sender: string
@@ -20,6 +18,7 @@ export type MessageProps = {
 }
 
 export type RoomProps = {
+  id: string
   name: string
   messages: MessageProps[]
 }
@@ -112,6 +111,27 @@ export const useServer = (
       }
     } catch (err) {
       return err
+    }
+  })
+}
+
+export const useRooms = (
+  serverId: string
+): UseQueryResult<RoomProps[], firebase.firestore.FirestoreError> => {
+  return useQuery(['getRooms', serverId], async () => {
+    try {
+      const rooms = await firestore
+        .collection('servers')
+        .doc(serverId)
+        .collection('rooms')
+        .get()
+      return rooms.docs.map((room) => ({
+        id: room.id,
+        name: room.data().name,
+        members: room.data().members,
+      }))
+    } catch (error) {
+      return error
     }
   })
 }

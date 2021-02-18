@@ -1,14 +1,18 @@
 import React from 'react'
 import { Grid } from '@chakra-ui/react'
+import { useAtom } from 'jotai'
 
-import ServersList from './ServersList/ServersList'
+import ServersList from './serversList/ServersList'
 import UsersList from './usersList/UsersList'
+import RoomsList from './roomsList/RoomsList'
+import { viewType } from '../../hooks/useAppState'
 
 const Sidebar = (): JSX.Element => {
+  const [view] = useAtom(viewType)
   return (
     <Grid h="100vh" templateColumns="70px 1fr">
       <ServersList />
-      <UsersList />
+      {view !== 'FRIEND' ? <RoomsList /> : <UsersList />}
     </Grid>
   )
 }

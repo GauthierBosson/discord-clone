@@ -4,7 +4,6 @@ import { VStack, SkeletonCircle } from '@chakra-ui/react'
 import { useServers, createServerTest } from '../../../hooks/react-query/useServers'
 import Server from './Server'
 
-// TODO : Change the purpose of this file. Pass ONLY the ID to the server components
 const ServersList = (): JSX.Element => {
   const { data, isLoading, isError } = useServers()
   const { mutate } = createServerTest()
@@ -30,6 +29,8 @@ const ServersList = (): JSX.Element => {
           )}
         </>
       )}
+      
+      {/* FOR DEV PURPOSE ONLY */}
       <button
         style={{ backgroundColor: 'white' }}
         onClick={() =>
