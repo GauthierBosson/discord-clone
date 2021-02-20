@@ -20,6 +20,13 @@ export type MessageProps = {
 export type RoomProps = {
   id: string
   name: string
+  members: string[]
+  messages: MessageProps[]
+}
+
+export type CreateRoomProps = {
+  name: string
+  members: string[]
   messages: MessageProps[]
 }
 export interface ServerProps {
@@ -130,7 +137,7 @@ export const useRoom = (
 }
 
 /**
- * Récupérer tous les messages pour une room
+ * Get all messages for one room
  * @param serverId id du serveur
  * @param roomId id de la room
  * @param isEnabled boolean that decides if the query should run
@@ -195,6 +202,22 @@ export const createServer = (): UseMutationResult<
       }
     },
     { onSuccess: () => queryClient.invalidateQueries('getServers') }
+  )
+}
+
+export const createRoom = (
+  serverId: string
+): UseMutationResult<void, firebase.firestore.FirestoreError, CreateRoomProps> => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (newRoom) => {
+      try {
+        await firestore.collection('servers').doc(serverId).collection('rooms').add(newRoom)
+      } catch (error) {
+        return error
+      }
+    },
+    { onSuccess: () => queryClient.invalidateQueries(['getRooms', serverId]) }
   )
 }
 

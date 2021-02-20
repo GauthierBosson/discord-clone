@@ -4,18 +4,18 @@ import { Provider } from 'jotai'
 
 import Sidebar from '../components/sidebar/Sidebar'
 import MainView from '../components/mainView/MainView'
-import { useAuth } from '../hooks/useAuth'
-import { firestore } from '../firebase'
+// import { useAuth } from '../hooks/useAuth'
+// import { firestore } from '../firebase'
 
 const AppView = (): JSX.Element => {
-  const auth = useAuth()
+  //const auth = useAuth()
   return (
     <Grid templateColumns="300px 1fr">
       <Provider>
         <Sidebar />
         <MainView />
       </Provider>
-      <button onClick={() => auth.signout()}>SIGNOUT</button>
+      {/* <button onClick={() => auth.signout()}>SIGNOUT</button>
       <button
         onClick={() =>
           firestore
@@ -32,7 +32,7 @@ const AppView = (): JSX.Element => {
         }
       >
         FIRESTORE
-      </button>
+      </button> */}
     </Grid>
   )
 }

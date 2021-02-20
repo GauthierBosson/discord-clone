@@ -14,6 +14,8 @@ const MessagesView = (): JSX.Element => {
   const [rId] = useAtom(roomId)
   const [enableMessages, setEnableMessages] = useAtom(isEnabled)
   const isFirstRender = useRef(true)
+  const scrollDown = useRef<HTMLDivElement>(null)
+  const view = useRef<HTMLDivElement>(null)
   let unsubscribe: () => any = () => {}
   const { data, isLoading, isError } = useMessages(sId, rId, enableMessages)
 
@@ -27,6 +29,10 @@ const MessagesView = (): JSX.Element => {
         .collection('messages')
         .onSnapshot(() => {
           queryClient.invalidateQueries(['getMessages', rId])
+          // TODO : only scroll bottom on new el if already at the bottom before
+          if (view.current!.scrollTop === (view.current!.scrollHeight - view.current!.offsetHeight)) {
+            scrollDown.current?.scrollIntoView({ behavior: 'smooth' })
+          }
         })
     }
 
@@ -45,7 +51,7 @@ const MessagesView = (): JSX.Element => {
   }
 
   return (
-    <Box h="100%" pos="relative">
+    <Box ref={view} h="100%" pos="relative">
       <VStack
         spacing={0}
         pos="absolute"
@@ -74,6 +80,7 @@ const MessagesView = (): JSX.Element => {
                     />
                   )
                 })}
+                <Box ref={scrollDown} float="left" />
               </>
             )}
           </>
