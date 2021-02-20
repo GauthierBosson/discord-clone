@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { MessageProps, RoomProps } from "./react-query/useServers";
+import { MessageProps } from "./react-query/useServers";
 
 export type ViewTypeProps = 'FRIEND' | 'CHAT' | 'SERVER'
 
@@ -18,12 +18,17 @@ export const viewType = atom<ViewTypeProps>('FRIEND')
 export const conversation = atom<MessageProps[]>([])
 
 /**
- * In every servers, there are multiple rooms, each time user clicks on a server, data will change with rooms for this server
- */
-export const rooms = atom<RoomProps[]>([])
-
-/**
  * Id of the server, used for adding message to a conversation
  * Might be a better way
  */
 export const serverId = atom<string>('')
+
+/**
+ * Room's id
+ */
+export const roomId = atom<string>('')
+
+/**
+ * Boolean controlling if query messages is enabled
+ */
+export const isEnabled = atom<boolean>(false)

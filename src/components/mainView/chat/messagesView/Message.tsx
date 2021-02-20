@@ -1,19 +1,19 @@
 import React from 'react'
 import { Flex, Avatar, HStack } from '@chakra-ui/react'
 
-const Message = (): JSX.Element => {
+import { MessageProps } from '../../../../hooks/react-query/useServers'
+
+const Message: React.FC<MessageProps> = ({ sender, content, timestamp }) => {
   return (
-    <HStack my={6} align="flex-start" px={4} _hover={{ backgroundColor: 'black' }}>
+    <HStack w="100%" my={6} align="flex-start" px={4} _hover={{ backgroundColor: 'black' }}>
       <Avatar name="John Doe" src="broken" />
       <Flex direction="column">
         <Flex>
-          <span>Jonh Doe</span>
-          <span>Today à 8h00</span>
+          <span>{sender}</span>
+          <span>{new Date(timestamp?.toDate()).toUTCString()}</span>
         </Flex>
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, eveniet
-          eaque! Velit eveniet deleniti quo quas, voluptate, impedit rem omnis non
-          delectus quod excepturi expedita necessitatibus quis illum est laborum?
+          {content}
         </p>
       </Flex>
     </HStack>

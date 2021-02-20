@@ -11,10 +11,10 @@ import { firestore } from '../../firebase'
 import { useAuth } from '../useAuth'
 
 export type MessageProps = {
-  id: string
+  id?: string
   sender: string
   content: string
-  timestamp: firebase.firestore.Timestamp
+  timestamp: any // firebase.firestore.FieldValue not working :(
 }
 
 export type RoomProps = {
@@ -29,40 +29,6 @@ export interface ServerProps {
   textualRooms: RoomProps[]
   members: string[]
 }
-
-/**
- * Get all servers and return them
- * OLD ONE
- */
-// export const useServers = (): UseQueryResult<
-//   ServerProps[],
-//   firebase.firestore.FirestoreError
-// > => {
-//   const auth = useAuth()
-//   return useQuery('getServers', async () => {
-//     try {
-//       const servers: firebase.firestore.DocumentData | undefined[] = []
-//       const doc = await firestore.collection('users').doc(auth.user?.uid).get()
-//       if (doc.exists) {
-//         const serversId: string[] = doc.get('servers')
-//         if (serversId.length) {
-//           for (const id of serversId) {
-//             await firestore
-//               .collection('servers')
-//               .doc(id)
-//               .get()
-//               .then((item) => servers.push(item.data()))
-//           }
-//         }
-//         return servers
-//       } else {
-//         return 'no such doc'
-//       }
-//     } catch (err) {
-//       return err
-//     }
-//   })
-// }
 
 export const useServers = (): UseQueryResult<
   string[],
@@ -87,7 +53,6 @@ export const useServers = (): UseQueryResult<
           }
         }
       }
-      console.log(userServers.get('servers'))
       return servers
     } catch (error) {
       return error
@@ -105,7 +70,7 @@ export const useServer = (
     try {
       const server = await firestore.collection('servers').doc(serverId).get()
       if (server.exists) {
-        return server
+        return server.data()
       } else {
         return "Server doesn't exists"
       }
@@ -115,6 +80,10 @@ export const useServer = (
   })
 }
 
+/**
+ * Get all rooms for one server
+ * @param serverId server's id
+ */
 export const useRooms = (
   serverId: string
 ): UseQueryResult<RoomProps[], firebase.firestore.FirestoreError> => {
@@ -137,45 +106,70 @@ export const useRooms = (
 }
 
 /**
- * Create a new server
- * OLD ONE
+ * Get one specific room for one server
+ * @param serverId server's id
+ * @param roomId room's id
  */
-// export const createServer = (): UseMutationResult<
-//   firebase.firestore.DocumentReference,
-//   firebase.firestore.FirestoreError,
-//   ServerProps
-// > => {
-//   const auth = useAuth()
-//   const queryClient = useQueryClient()
-//   return useMutation(
-//     async (newServer) =>
-//       await firestore
-//         .collection('servers')
-//         .add(newServer)
-//         .then(async (docRef) => {
-//           await docRef.set(
-//             {
-//               id: docRef.id,
-//             },
-//             { merge: true }
-//           )
-//           await firestore
-//             .collection('users')
-//             .doc(auth.user?.uid)
-//             .update({
-//               servers: firebase.firestore.FieldValue.arrayUnion(docRef.id),
-//             })
-//         })
-//         .catch((err) => err),
-//     {
-//       onSuccess: () => {
-//         queryClient.invalidateQueries('getServers')
-//       },
-//     }
-//   )
-// }
+export const useRoom = (
+  serverId: string,
+  roomId: string
+): UseQueryResult<RoomProps, firebase.firestore.FirestoreError> => {
+  return useQuery(['getRoom', roomId], async () => {
+    try {
+      const room = await firestore
+        .collection('servers')
+        .doc(serverId)
+        .collection('rooms')
+        .doc(roomId)
+        .get()
+      return room.data()
+    } catch (error) {
+      return error
+    }
+  })
+}
 
-export const createServerTest = (): UseMutationResult<
+/**
+ * Récupérer tous les messages pour une room
+ * @param serverId id du serveur
+ * @param roomId id de la room
+ * @param isEnabled boolean that decides if the query should run
+ */
+export const useMessages = (
+  serverId: string,
+  roomId: string,
+  isEnabled: boolean
+): UseQueryResult<MessageProps[], firebase.firestore.FirestoreError> => {
+  return useQuery(
+    ['getMessages', roomId],
+    async () => {
+      try {
+        const messages = await firestore
+          .collection('servers')
+          .doc(serverId)
+          .collection('rooms')
+          .doc(roomId)
+          .collection('messages')
+          .orderBy('timestamp', 'asc')
+          .get()
+        return messages.docs.map((message) => ({
+          id: message.id,
+          sender: message.data().sender,
+          content: message.data().content,
+          timestamp: message.data().timestamp,
+        }))
+      } catch (error) {
+        return
+      }
+    },
+    { enabled: isEnabled }
+  )
+}
+
+/**
+ * Create a new server
+ */
+export const createServer = (): UseMutationResult<
   void,
   firebase.firestore.FirestoreError,
   { name: string; picture: string | null }
@@ -208,26 +202,20 @@ export const createServerTest = (): UseMutationResult<
  * Add a new message in a room on a server
  */
 export const addMessage = (
-  serverId: string
+  serverId: string,
+  roomId: string
 ): UseMutationResult<void, firebase.firestore.FirestoreError, MessageProps> => {
-  const queryClient = useQueryClient()
-  return useMutation(
-    async (newMsg) => {
-      try {
-        await firestore
-          .collection('servers')
-          .doc(serverId)
-          .update({
-            messages: firebase.firestore.FieldValue.arrayUnion(newMsg),
-          })
-      } catch (err) {
-        console.log(err)
-      }
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('getServers')
-      },
+  return useMutation(async (newMsg) => {
+    try {
+      await firestore
+        .collection('servers')
+        .doc(serverId)
+        .collection('rooms')
+        .doc(roomId)
+        .collection('messages')
+        .add(newMsg)
+    } catch (err) {
+      console.log(err)
     }
-  )
+  })
 }

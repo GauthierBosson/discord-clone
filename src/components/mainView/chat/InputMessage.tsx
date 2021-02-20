@@ -1,6 +1,6 @@
 import React from 'react'
 import firebase from 'firebase/app'
-import { v4 as uuid } from 'uuid'
+import { useAtom } from 'jotai'
 import {
   Input,
   InputGroup,
@@ -11,19 +11,18 @@ import {
 } from '@chakra-ui/react'
 
 import { addMessage } from '../../../hooks/react-query/useServers'
-import { serverId } from '../../../hooks/useAppState'
-import { useAtom } from 'jotai'
+import { serverId, roomId } from '../../../hooks/useAppState'
 
 const InputMessage = (): JSX.Element => {
-  const [id] = useAtom(serverId)
-  const { mutate } = addMessage(id)
+  const [sId] = useAtom(serverId)
+  const [rId] = useAtom(roomId)
+  const { mutate } = addMessage(sId, rId)
   const handleClick = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       mutate({
-        id: uuid(),
         sender: 'ififif',
         content: e.currentTarget.value,
-        timestamp: firebase.firestore.Timestamp.now()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
       })
     }
   }
